@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Estudiantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #333;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background: #667eea;
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.3s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 Sistema de Gestión de Estudiantes</h1>
+            <p>Arquitectura en Capas - Spring Boot</p>
+        </header>
+
+        <div class="alert alert-success" id="successAlert"></div>
+        <div class="alert alert-error" id="errorAlert"></div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEstudiantes">0</div>
+                <div class="stat-label">Total Estudiantes</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title" id="formTitle">📝 Registrar Nuevo Estudiante</h2>
+            <form id="estudianteForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido">Apellido *</label>
+                        <input type="text" id="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="codigo">Código *</label>
+                        <input type="text" id="codigo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="carrera">Carrera</label>
+                        <input type="text" id="carrera">
+                    </div>
+                    <div class="form-group">
+                        <label for="semestre">Semestre</label>
+                        <input type="number" id="semestre" min="1" max="12">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-primary" id="btnSubmit">
+                        ✓ Guardar Estudiante
+                    </button>
+                    <button type="button" class="btn-secondary" id="btnCancelar" style="display: none;">
+                        ✗ Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">📊 Lista de Estudiantes</h2>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar por nombre, apellido, email o código...">
+            </div>
+            <div class="table-container">
+                <table id="estudiantesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
+                            <th>Código</th>
+                            <th>Carrera</th>
+                            <th>Semestre</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="estudiantesBody">
+                        <tr>
+                            <td colspan="8" class="empty-state">
+                                <div>Cargando estudiantes...</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/estudiantes';
+        let editandoId = null;
+        let estudiantes = [];
+
+        // Cargar estudiantes al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarEstudiantes();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('estudianteForm').addEventListener('submit', guardarEstudiante);
+            document.getElementById('btnCancelar').addEventListener('click', cancelarEdicion);
+            document.getElementById('searchInput').addEventListener('input', filtrarEstudiantes);
+        }
+
+        async function cargarEstudiantes() {
+            try {
+                const response = await fetch(API_URL);
+                estudiantes = await response.json();
+                actualizarEstadisticas();
+                renderizarEstudiantes(estudiantes);
+            } catch (error) {
+                mostrarError('Error al cargar los estudiantes: ' + error.message);
+            }
+        }
+
+        function renderizarEstudiantes(lista) {
+            const tbody = document.getElementById('estudiantesBody');
+            
+            if (lista.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="empty-state">
+                            <div>
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <h3>No hay estudiantes registrados</h3>
+                                <p>Comienza registrando tu primer estudiante</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = lista.map(est => `
+                <tr>
+                    <td>${est.id}</td>
+                    <td>${est.nombre}</td>
+                    <td>${est.apellido}</td>
+                    <td>${est.email}</td>
+                    <td>${est.codigo}</td>
+                    <td>${est.carrera || '-'}</td>
+                    <td>${est.semestre || '-'}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-edit" onclick="editarEstudiante(${est.id})">
+                                ✏️ Editar
+                            </button>
+                            <button class="btn-delete" onclick="eliminarEstudiante(${est.id})">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function guardarEstudiante(e) {
+            e.preventDefault();
+
+            const estudiante = {
+                nombre: document.getElementById('nombre').value,
+                apellido: document.getElementById('apellido').value,
+                email: document.getElementById('email').value,
+                codigo: document.getElementById('codigo').value,
+                carrera: document.getElementById('carrera').value || null,
+                semestre: document.getElementById('semestre').value ? parseInt(document.getElementById('semestre').value) : null
+            };
+
+            try {
+                let response;
+                if (editandoId) {
+                    response = await fetch(`${API_URL}/${editandoId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(estudiante)
+                    });
+                } else {
+                    response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(estudiante)
+                    });
+                }
+
+                if (response.ok) {
+                    mostrarExito(editandoId ? 'Estudiante actualizado exitosamente' : 'Estudiante registrado exitosamente');
+                    limpiarFormulario();
+                    cargarEstudiantes();
+                } else {
+                    const error = await response.json();
+                    mostrarError(error.error || 'Error al guardar el estudiante');
+                }
+            } catch (error) {
+                mostrarError('Error de conexión: ' + error.message);
+            }
+        }
+
+        async function editarEstudiante(id) {
+            const estudiante = estudiantes.find(e => e.id === id);
+            if (!estudiante) return;
+
+            editandoId = id;
+            document.getElementById('nombre').value = estudiante.nombre;
+            document.getElementById('apellido').value = estudiante.apellido;
+            document.getElementById('email').value = estudiante.email;
+            document.getElementById('codigo').value = estudiante.codigo;
+            document.getElementById('carrera').value = estudiante.carrera || '';
+            document.getElementById('semestre').value = estudiante.semestre || '';
+
+            document.getElementById('formTitle').textContent = '✏️ Editar Estudiante';
+            document.getElementById('btnSubmit').textContent = '✓ Actualizar Estudiante';
+            document.getElementById('btnCancelar').style.display = 'block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function eliminarEstudiante(id) {
+            if (!confirm('¿Estás seguro de que deseas eliminar este estudiante?')) return;
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                
+                if (response.ok) {
+                    mostrarExito('Estudiante eliminado exitosamente');
+                    cargarEstudiantes();
+                } else {
+                    const error = await response.json();
+                    mostrarError(error.error || 'Error al eliminar el estudiante');
+                }
+            } catch (error) {
+                mostrarError('Error de conexión: ' + error.message);
+            }
+        }
+
+        function cancelarEdicion() {
+            limpiarFormulario();
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('estudianteForm').reset();
+            editandoId = null;
+            document.getElementById('formTitle').textContent = '📝 Registrar Nuevo Estudiante';
+            document.getElementById('btnSubmit').textContent = '✓ Guardar Estudiante';
+            document.getElementById('btnCancelar').style.display = 'none';
+        }
+
+        function filtrarEstudiantes() {
+            const filtro = document.getElementById('searchInput').value.toLowerCase();
+            const filtrados = estudiantes.filter(est => 
+                est.nombre.toLowerCase().includes(filtro) ||
+                est.apellido.toLowerCase().includes(filtro) ||
+                est.email.toLowerCase().includes(filtro) ||
+                est.codigo.toLowerCase().includes(filtro)
+            );
+            renderizarEstudiantes(filtrados);
+        }
+
+        function actualizarEstadisticas() {
+            document.getElementById('totalEstudiantes').textContent = estudiantes.length;
+        }
+
+        function mostrarExito(mensaje) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = '✓ ' + mensaje;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 4000);
+        }
+
+        function mostrarError(mensaje) {
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = '✗ ' + mensaje;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 4000);
+        }
+    </script>
+</body>
+</html>
